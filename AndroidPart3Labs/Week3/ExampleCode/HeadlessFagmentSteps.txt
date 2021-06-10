@@ -1,0 +1,70 @@
+Headless Fragment Steps
+
+https://techbandhu.wordpress.com/2013/07/02/android-headless-fragment/
+
+Step 1-
+
+UI Fragment: Check whether we have already created the fragment, if yes leave it aside.
+
+By below code
+
+FragmentManager fragmentManager = getFragmentManager();
+HeadlessFragments fragment = (HeadlessFragments) fragmentManager                
+                      .findFragmentByTag(HeadlessFragments.TAG);
+
+After this, fragment will be null if destroyed or creating for first time.
+
+Step 2-
+
+UI Fragment: If fragment is null on Step 1, initialize it.
+
+By below code
+        if (fragment == null) {
+            fragment = new HeadlessFragments();
+            fragment.setTargetFragment(this, 10);
+            fragmentManager.beginTransaction().add(fragment,
+                    ContactsListHeadlessFragments.TAG).commit();
+        }
+
+These are the lines we must enter to start our headless fragment properly, 
+apart from that you can add some listeners in headless fragment, which will 
+notify to UI fragment about current task status.
+
+Step-3
+
+Headless fragment : onCreate
+
+Keep in mind the headless fragment has two important aspects. 
+1: It doesn’t have UI. 
+2. It retains its state throughout configuration changes.
+
+Part 1 will be covered in next step. Here we are going to cover part 2.
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onCreate(savedInstanceState);
+
+        //The heart and mind of headless fragment is below line. It will keep the fragment 
+		// alive during configuration change when activities and   
+		//subsequent fragments are "put to death" and recreated
+        setRetainInstance(true);
+
+        performLongAction();
+    }
+
+Step-4
+
+HeadlessFragment : If you have onCreateView overridden in your headless fragment, return null.
+
+However this step is optional. In a practice I don’t override onCreateView at all. 
+And it still works. So we don’t have any code here.
+
+Notes:
+ - In case you need context to work with resources, on handy (not necessarily the best) 
+place to get this is onActivityCreate() method. However if you have set target fragment 
+properly in UI fragment you can do it virtually anywhere.
+ - This method is not fool proof. We have to take care when UI fragment is destroyed 
+(mostly because we have moved in other fragment-activity or our parent activity is 
+onPause, among other reasons) and our headless fragment is still doing some operations. 
+It will throw exception.

@@ -1,0 +1,8 @@
+Code here is from:
+
+http://www.brighthub.com/mobile/google-android/articles/82805.aspx
+
+and can be downloaded here:
+
+https://github.com/jbeerdev/BrightHubCode
+
